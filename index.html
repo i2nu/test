@@ -14,15 +14,26 @@
             font-size: 24px;
             margin-bottom: 20px;
         }
-        #result, #averageTime {
+        #result {
             margin-top: 20px;
+            font-weight: bold;
         }
         #log {
             margin-top: 20px;
             text-align: left;
             display: inline-block;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 300px;
+            padding: 10px; /* Add padding instead of border */
         }
-    </style>
+        .correct {
+            color: rgb(82, 231, 82); 
+        }
+        .incorrect {
+            color: red;
+        }
+    </style> 
 </head>
 <body>
 
@@ -32,9 +43,17 @@
 <div id="result"></div>
 <div id="averageTime"></div>
 <div id="log"></div>
-<button id="stopButton">STOP</button>
+<button id="startButton">Start</button>
+<button id="stopButton">Stop</button>
 
 <script>
+    let startTime;
+    let log = [];
+
+    document.getElementById('startButton').addEventListener('click', function() {
+        startPractice();
+    });
+
     function generateRandomString(length = 6) {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let result = '';
@@ -51,59 +70,72 @@
         document.getElementById('userInput').disabled = false;
         document.getElementById('userInput').focus();
         startTime = new Date().getTime();
+        // Do not reset log array to keep previous logs
+        updateLog(); // Update log display
+        document.getElementById('result').textContent = '';
+        document.getElementById('averageTime').textContent = '';
     }
 
-    let startTime;
-    let log = [];
     document.getElementById('userInput').addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !document.getElementById('userInput').disabled) {
             const endTime = new Date().getTime();
             const timeTaken = (endTime - startTime) / 1000;
-            const userInput = document.getElementById('userInput').value;
+            const userInput = document.getElementById('userInput').value.trim().toUpperCase(); // Convert to uppercase
             const randomString = document.getElementById('randomString').textContent;
             const formattedTime = new Date(endTime).toLocaleString();
 
             let resultMessage;
+            let resultClass;
             if (userInput === randomString) {
-                resultMessage = `Correct! ${timeTaken.toFixed(2)} seconds. Completed at ${formattedTime}.`;
+                resultMessage = `CORRECT! ${timeTaken.toFixed(2)} seconds. Completed at ${formattedTime}.`;
+                resultClass = 'correct';
             } else {
-                resultMessage = `Incorrect. The correct string was: ${randomString}. Completed at ${formattedTime}.`;
+                resultMessage = `INCORRECT. The correct string was: ${randomString}. Completed at ${formattedTime}.`;
+                resultClass = 'incorrect';
             }
 
-            log.push(timeTaken);
+            log.push({ input: userInput, time: timeTaken });
             document.getElementById('result').textContent = resultMessage;
+            document.getElementById('result').className = resultClass;
             updateLog();
             updateAverageTime();
             document.getElementById('userInput').disabled = true;
+        } else {
+            // Update input field to uppercase as user types
+            document.getElementById('userInput').value = document.getElementById('userInput').value.toUpperCase();
         }
     });
 
     function updateLog() {
         const logElement = document.getElementById('log');
-        logElement.innerHTML = '<strong>Log:</strong><br>' + log.map((time, index) => `Attempt ${index + 1}: ${time.toFixed(2)} seconds`).join('<br>');
+        logElement.innerHTML = '<strong>Log:</strong><br>' + log.map((entry, index) => `Attempt ${index + 1}: ${entry.input} (${entry.time.toFixed(2)} seconds)`).join('<br>');
     }
 
     function updateAverageTime() {
-        const averageTime = log.reduce((a, b) => a + b, 0) / log.length;
-        document.getElementById('averageTime').textContent = `Average Time: ${averageTime.toFixed(2)} seconds`;
-    }
-
-    document.body.addEventListener('keyup', function(event) {
-        if (event.key === ' ') {
-            startPractice();
+        if (log.length > 0) {
+            const averageTime = log.reduce((total, entry) => total + entry.time, 0) / log.length;
+            document.getElementById('averageTime').textContent = `Average Time: ${averageTime.toFixed(2)} seconds`;
         }
-    });
+    }
 
     document.getElementById('stopButton').addEventListener('click', function() {
         document.getElementById('randomString').textContent = '';
         document.getElementById('userInput').value = '';
         document.getElementById('userInput').disabled = true;
         document.getElementById('result').textContent = '';
+        document.getElementById('result').className = '';
         document.getElementById('averageTime').textContent = '';
-        document.getElementById('log').innerHTML = '';
-        log = [];
-        alert("Thanks for practicing! Goodbye!");
+        // Do not clear log array on stop
+        updateLog(); // Update log display
+        alert("Practice session stopped.");
     });
+
+    document.body.addEventListener('keyup', function(event) {
+        if (event.key === ' ' && document.getElementById('userInput').disabled) {
+            startPractice();
+        }
+    });
+
 </script>
 
 </body>
