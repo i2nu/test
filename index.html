@@ -2,64 +2,71 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>도장판 & 증정</title>
 <style>
   body {
     font-family: sans-serif;
     background-color: #c5e6e8;
-    padding: 10px;
-    margin: 0;
+    padding: 20px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    gap: 20px;
+    flex-direction: row;
   }
 
   #leftSection {
-    width: 100%;
-  }
+  flex: 1 1 400px;
+  min-width: 0; /* 넘침 방지 */
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%; /* 부모 flex item에서 꽉 채우도록 */
+  box-sizing: border-box;
+}
+
 
   #configForm {
-    background: #fff;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 2px solid #444;
-    font-size: 16px;
-    box-sizing: border-box;
-    margin-bottom: 8px;
-  }
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 2px solid #444;
+  font-size: 14px;
+  box-sizing: border-box;
+  width: 100%; /* 꼭 100%로 */
+}
   #configForm label {
     display: inline-block;
-    width: 130px;
+    width: 100px;
     font-weight: 600;
-    font-size: 16px;
   }
   #configForm input[type="number"], #configForm select {
-    padding: 6px;
-    font-size: 16px;
-    margin-right: 6px;
+    padding: 4px;
+    font-size: 14px;
+    margin-right: 10px;
   }
   #configForm input[type="number"] {
     width: 70px;
   }
   #configForm .line {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
   #configForm button.add-btn {
     font-weight: 700;
-    padding: 10px 18px;
+    padding: 8px 16px;
     cursor: pointer;
     border-radius: 8px;
     border: none;
     background-color: #4a90e2;
     color: white;
-    font-size: 17px;
+    font-size: 15px;
   }
   #configForm button.reset-btn {
     font-weight: 400;
-    font-size: 14px;
+    font-size: 13px;
     color: #888;
     background: none;
     border: none;
@@ -71,23 +78,26 @@
     align-items: center;
   }
   .rewardCountWrapper span {
-    margin-left: 6px;
-    font-size: 15px;
+    margin-left: 4px;
+    font-size: 13px;
   }
 
+  /* 도장판 2열 3행 배치 (왼쪽 오른쪽 열로 세로로 3개씩) */
   #stampBoardsContainer {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    max-height: calc(2 * 160px + 14px);
+    grid-auto-rows: auto;
+    gap: 12px 12px;
+    width: 100%;
+    max-height: 600px;
     overflow-y: auto;
     background: #f9f9f9;
-    padding: 10px;
+    padding: 8px;
     border-radius: 12px;
     border: 1px solid #bbb;
-    margin-bottom: 10px;
   }
 
+  /* 각 도장판 */
   .board-set {
     background: #fff;
     border: 2px solid #444;
@@ -95,12 +105,12 @@
     border-radius: 12px;
     display: flex;
     flex-direction: column;
+    width: 100%;
     box-sizing: border-box;
-    height: 150px;
   }
   .board-header {
     font-weight: bold;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -110,7 +120,7 @@
     background: none;
     border: none;
     color: red;
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
     font-weight: bold;
     line-height: 1;
@@ -121,46 +131,46 @@
     gap: 8px;
     margin-top: 4px;
     grid-template-columns: repeat(4, 1fr);
-    user-select: none;
-    font-size: 14px;
   }
   .stamp {
     background: #fff;
     border: 1px solid #888;
-    padding: 6px 6px 8px 6px;
+    padding: 4px 2px 6px 2px;
     text-align: center;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 11px;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   .stamp input[type="text"] {
-    width: 45px;
-    font-size: 14px;
-    margin-top: 6px;
+    width: 80%;
+    max-width: 80px;
+    font-size: 10px;
+    margin-top: 3px;
     text-align: center;
-    padding: 3px 6px;
+    padding: 1px 3px;
     border-radius: 4px;
     border: 1px solid #bbb;
   }
   .stamp input[type="checkbox"] {
-    transform: scale(1.7);
-    margin: 2px 0 0 6px;
+    transform: scale(1.2);
+    margin-top: 1px;
     cursor: pointer;
   }
   .stamp-num {
     font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 3px;
+    font-size: 11px;
+    margin-bottom: 1px;
     user-select: none;
   }
   .stamp-top {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 15px;
     margin-bottom: 4px;
   }
+
   .stamp.special {
     font-weight: 700;
     color: #222;
@@ -173,65 +183,232 @@
   }
 
   #rewardSection {
-    width: 100%;
-    padding: 4px 6px 10px;
-    box-sizing: border-box;
+    flex: 0 1 180px;
+    min-width: 100px;
+    flex-shrink: 0;
+    width: 180px;
   }
   .section-title {
     font-weight: bold;
-    margin: 12px 0 8px;
-    font-size: 18px;
+    margin: 12px 0 6px;
+    font-size: 15px;
   }
   .coupon-board {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 20px;
   }
   .coupon {
     background: white;
-    padding: 8px;
+    border: 2px solid #444;
+    padding: 6px;
     text-align: center;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 12px;
   }
   .coupon-type {
     font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 16px;
+    margin-bottom: 4px;
+    font-size: 13px;
     color: #333;
   }
   .coupon input[type="text"] {
     width: 90%;
-    font-size: 14px;
-    margin-top: 6px;
+    font-size: 12px;
+    margin-top: 4px;
     text-align: center;
-    padding: 6px 8px;
-    border-radius: 6px;
+    padding: 3px 5px;
+    border-radius: 5px;
     border: 1px solid #bbb;
   }
   .coupon input[type="checkbox"] {
-    transform: scale(1.5);
-    margin-bottom: 8px;
+    transform: scale(1.3);
+    margin-bottom: 6px;
     cursor: pointer;
   }
 
-  @media (max-width: 768px) {
+  #buttonGroup {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+  }
+
+  /* 반응형 처리 */
+
+  /* 기본: 2열 */
+  #stampBoardsContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-height: none; /* 필요시 조정 */
+  }
+
+  #configForm label {
+  display: inline-flex;
+  align-items: center;
+  writing-mode: horizontal-tb !important;
+  white-space: nowrap !important;
+  gap: 4px;
+}
+
+
+  /* 601px ~ 770px: 2열 유지, 도장판 최대 너비 제한 */
+  @media (min-width: 601px) and (max-width: 770px) {
     body {
-      padding: 8px 10px;
+      flex-direction: column;
+    }
+    #leftSection, #rewardSection {
+      width: 100%;
+      max-width: none;
+      flex: none;
+      min-width: 0;
     }
     #stampBoardsContainer {
       grid-template-columns: repeat(2, 1fr);
-      max-height: calc(2 * 150px + 14px);
-      padding: 8px;
+      max-height: 250px; /* 필요시 조절 */
+    }
+    .board-set {
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .stamp {
+      font-size: 10px;
+    }
+    .stamp input[type="text"] {
+      width: 80%;
+      max-width: 80px;
     }
     #rewardSection {
-      order: 2;
+      width: 100%;
+      margin-top: 20px;
+      flex-shrink: initial;
     }
   }
+
+  /* 461px ~ 600px: 1열, 도장판 꽉 채움 */
+  @media (min-width: 461px) and (max-width: 600px) {
+    body {
+      flex-direction: column;
+    }
+    #leftSection, #rewardSection {
+      width: 100%;
+      max-width: none;
+      flex: none;
+      min-width: 0;
+    }
+    #stampBoardsContainer {
+      grid-template-columns: 1fr;
+      max-height: 250px;
+    }
+    .board-set {
+      max-width: 100%;
+      margin: 0;
+    }
+    .stamp {
+      font-size: 11px;
+    }
+    .stamp input[type="text"] {
+      width: 90%;
+      max-width: 60px;
+    }
+    #rewardSection {
+      width: 100%;
+      margin-top: 20px;
+      flex-shrink: initial;
+    }
+  }
+
+  /* 460px 이하: 1열, 도장판 꽉 채움, 글씨 조금 더 작게 */
+  @media (max-width: 460px) {
+    body {
+      flex-direction: column;
+    }
+    #leftSection, #rewardSection {
+      width: 100%;
+      max-width: none;
+      flex: none;
+      min-width: 0;
+    }
+    #stampBoardsContainer {
+      grid-template-columns: 1fr;
+      max-height: 250px;
+    }
+    .board-set {
+      max-width: 100%;
+      margin: 0;
+    }
+    .stamp {
+      font-size: 9px;
+    }
+    .stamp input[type="text"] {
+      width: 80%;
+      max-width: 50px;
+    }
+    #rewardSection {
+      width: 100%;
+      margin-top: 20px;
+      flex-shrink: initial;
+    }
+    #rewardIndex1, #rewardIndex2, #rewardIndex3 {
+    max-width: 50px !important;
+  }
+  }
+
+  @media (max-width: 430px) {
+  #configForm .line {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  #configForm label {
+    width: auto;
+    margin-bottom: 4px;
+  }
+
+  #configForm input[type="number"],
+  #configForm select {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+  }
+
+  .rewardCountWrapper {
+    width: 100%;
+  }
+
+  .rewardCountWrapper input[type="number"] {
+    width: 100%;
+  }
+
+  .rewardCountWrapper span {
+    margin-left: 6px;
+  }
+
+   #rewardIndex1, #rewardIndex2, #rewardIndex3 {
+    max-width: 40px !important;
+  }
+  #rewardCount1, #rewardCount2, #rewardCount3 {
+    max-width: 40px !important;
+  }
+
+  label #num {
+    display: flex !important;
+    flex-direction: row;
+    writing-mode: horizontal-tb !important;
+  }
+  * {
+  box-sizing: border-box;
+  }
+
+}
+
+
 </style>
 </head>
 <body>
+
 
 <div id="leftSection">
 
@@ -239,10 +416,13 @@
     <div class="line">
       <label for="totalStamps">총 도장 개수</label>
       <input id="totalStamps" type="number" min="1" max="20" value="8" required />
+      <span>개</span>
     </div>
+
     <div class="line">
-      <label>증정 시점 1</label>
+      <label id="num">증정 1</label>
       <input id="rewardIndex1" type="number" min="1" max="20" value="4" />
+      <span>찍</span>
       <select id="rewardType1">
         <option value="">없음</option>
         <option value="discount">할인권</option>
@@ -257,8 +437,9 @@
       </div>
     </div>
     <div class="line">
-      <label>증정 시점 2</label>
+      <label id="num">증정 2</label>
       <input id="rewardIndex2" type="number" min="1" max="20" value="8" />
+      <span>찍</span>
       <select id="rewardType2">
         <option value="">없음</option>
         <option value="discount">할인권</option>
@@ -273,8 +454,9 @@
       </div>
     </div>
     <div class="line">
-      <label>증정 시점 3</label>
+      <label id="num">증정 3</label>
       <input id="rewardIndex3" type="number" min="1" max="20" placeholder="-" />
+      <span>찍</span>
       <select id="rewardType3">
         <option value="">없음</option>
         <option value="discount">할인권</option>
@@ -340,6 +522,25 @@
       hideAllRewardSections();
     }
   }
+
+  function moveRewardSectionForMobile() {
+    const rewardSection = document.getElementById('rewardSection');
+    const leftSection = document.getElementById('leftSection');
+
+    if(window.innerWidth <= 720) {
+      if(leftSection.nextElementSibling !== rewardSection) {
+        leftSection.insertAdjacentElement('afterend', rewardSection);
+      }
+    } else {
+      if(document.body.lastElementChild !== rewardSection) {
+        document.body.appendChild(rewardSection);
+      }
+    }
+  }
+
+  // 초기 실행 및 리사이즈 시 실행
+  window.addEventListener('resize', moveRewardSectionForMobile);
+  window.addEventListener('DOMContentLoaded', moveRewardSectionForMobile);
 
   function clearRewards() {
     ['discountBoard','polaroidBoard','ostBoard','memoryBoard','etcBoard'].forEach(id => {
@@ -433,7 +634,6 @@
       const rewardObj = rewards.find(r => r.index === i);
       if(rewardObj) {
         div.classList.add('special');
-        // 특별 표시 4, 8만 스타일 적용 (기본값)
         if(i === 4) div.classList.add('special-4');
         else if(i === 8) div.classList.add('special-8');
         else div.style.backgroundColor = '#fff3b0';
@@ -442,17 +642,15 @@
       div.innerHTML = `
         <div class="stamp-top">
             <span class="stamp-num">${i}</span>
-        <input type="checkbox" onchange="updateRewards()" />
+            <input type="checkbox" onchange="updateRewards()" />
         </div>
         <input type="text" placeholder="MM/DD" maxlength="5" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').slice(0,5)" />
-        
       `;
       board.appendChild(div);
     }
 
     boardWrap.appendChild(board);
 
-    // 도장판 추가 (그리드 컨테이너에 추가)
     document.getElementById('stampBoardsContainer').appendChild(boardWrap);
 
     allBoards.push({ id: currentBoardId, total, rewards, element: boardWrap });
@@ -472,7 +670,6 @@
       etc: '기타',
     };
 
-    // 각 증정품별 누적 개수 합산
     let rewardTotals = {
       discount: 0,
       polaroid: 0,
@@ -482,8 +679,6 @@
     };
 
     allBoards.forEach(board => {
-      // board.rewards = [{index, type, count}, ...]
-      // 체크된 도장 수 세기
       const checkboxes = board.element.querySelectorAll('.stamp input[type="checkbox"]');
       let checkedCount = 0;
       checkboxes.forEach(cb => {
@@ -491,14 +686,12 @@
       });
 
       board.rewards.forEach(r => {
-        // 체크된 도장이 증정 시점 이상이면 증정품 개수 누적
         if(checkedCount >= r.index) {
           rewardTotals[r.type] += r.count;
         }
       });
     });
 
-    // 증정품별로 표시
     Object.entries(rewardTotals).forEach(([type, total]) => {
       if(total > 0) {
         showRewardSection(type);
@@ -507,11 +700,10 @@
           const div = document.createElement('div');
           div.className = 'coupon';
 
-          // 증정권 유형별 input 차이
           let inputHtml = '';
           if(type === 'discount') {
             inputHtml = `<input type="checkbox" /> 사용<br><input type="text" placeholder="MM/DD" maxlength="5" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').slice(0,5)" />`;
-          } else if(type === 'polaroid' || type === 'ost' || type === 'memory' || type === 'etc') {
+          } else {
             inputHtml = `<input type="checkbox" /> 사용<br><input type="text" placeholder="이름" />`;
           }
 
@@ -522,8 +714,8 @@
       }
     });
   }
+  
 </script>
 
-  <!-- HTML 구조 생략, 기존 구조 유지하되 #rewardSection은 stampBoardsContainer 아래에 위치 -->
 </body>
 </html>
