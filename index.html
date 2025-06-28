@@ -1,720 +1,865 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>도장판 & 증정</title>
-<style>
-  body {
-    font-family: sans-serif;
-    background-color: #c5e6e8;
-    padding: 20px;
-    display: flex;
-    gap: 20px;
-    flex-direction: row;
-  }
-
-  #leftSection {
-  flex: 1 1 400px;
-  min-width: 0;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-
-  #configForm {
-  background: #fff;
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: 2px solid #444;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-  #configForm label {
-    display: inline-block;
-    width: 100px;
-    font-weight: 600;
-  }
-  #configForm input[type="number"], #configForm select {
-    padding: 4px;
-    font-size: 14px;
-    margin-right: 10px;
-  }
-  #configForm input[type="number"] {
-    width: 70px;
-  }
-  #configForm .line {
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  #configForm button.add-btn {
-    font-weight: 700;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 8px;
-    border: none;
-    background-color: #4a90e2;
-    color: white;
-    font-size: 15px;
-  }
-  #configForm button.reset-btn {
-    font-weight: 400;
-    font-size: 13px;
-    color: #888;
-    background: none;
-    border: none;
-    cursor: pointer;
-    align-self: center;
-  }
-  .rewardCountWrapper {
-    display: inline-flex;
-    align-items: center;
-  }
-  .rewardCountWrapper span {
-    margin-left: 4px;
-    font-size: 13px;
-  }
-
-  /* 도장판 2열 3행 배치 (왼쪽 오른쪽 열로 세로로 3개씩) */
-  #stampBoardsContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: auto;
-    gap: 12px 12px;
-    width: 100%;
-    max-height: 600px;
-    overflow-y: auto;
-    background: #f9f9f9;
-    padding: 8px;
-    border-radius: 12px;
-    border: 1px solid #bbb;
-  }
-
-  /* 각 도장판 */
-  .board-set {
-    background: #fff;
-    border: 2px solid #444;
-    padding: 12px 14px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  .board-header {
-    font-weight: bold;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 16px;
-  }
-  .delete-btn {
-    background: none;
-    border: none;
-    color: red;
-    font-size: 22px;
-    cursor: pointer;
-    font-weight: bold;
-    line-height: 1;
-  }
-
-  .stamp-board {
-    display: grid;
-    gap: 8px;
-    margin-top: 4px;
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .stamp {
-    background: #fff;
-    border: 1px solid #888;
-    padding: 4px 2px 6px 2px;
-    text-align: center;
-    border-radius: 6px;
-    font-size: 11px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .stamp input[type="text"] {
-    width: 80%;
-    max-width: 80px;
-    font-size: 10px;
-    margin-top: 3px;
-    text-align: center;
-    padding: 1px 3px;
-    border-radius: 4px;
-    border: 1px solid #bbb;
-  }
-  .stamp input[type="checkbox"] {
-    transform: scale(1.2);
-    margin-top: 1px;
-    cursor: pointer;
-  }
-  .stamp-num {
-    font-weight: 600;
-    font-size: 11px;
-    margin-bottom: 1px;
-    user-select: none;
-  }
-  .stamp-top {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 4px;
-  }
-
-  .stamp.special {
-    font-weight: 700;
-    color: #222;
-  }
-  .stamp.special-4 {
-    background-color: #fff3b0;
-  }
-  .stamp.special-8 {
-    background-color: #cce5ff;
-  }
-
-  #rewardSection {
-    flex: 0 1 180px;
-    min-width: 100px;
-    flex-shrink: 0;
-    width: 180px;
-  }
-  .section-title {
-    font-weight: bold;
-    margin: 12px 0 6px;
-    font-size: 15px;
-  }
-  .coupon-board {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .coupon {
-    background: white;
-    border: 2px solid #444;
-    padding: 6px;
-    text-align: center;
-    border-radius: 8px;
-    font-size: 12px;
-  }
-  .coupon-type {
-    font-weight: bold;
-    margin-bottom: 4px;
-    font-size: 13px;
-    color: #333;
-  }
-  .coupon input[type="text"] {
-    width: 90%;
-    font-size: 12px;
-    margin-top: 4px;
-    text-align: center;
-    padding: 3px 5px;
-    border-radius: 5px;
-    border: 1px solid #bbb;
-  }
-  .coupon input[type="checkbox"] {
-    transform: scale(1.3);
-    margin-bottom: 6px;
-    cursor: pointer;
-  }
-
-  #buttonGroup {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    align-items: center;
-  }
-
-  /* 반응형 처리 */
-
-  /* 기본: 2열 */
-  #stampBoardsContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    max-height: none; /* 필요시 조정 */
-  }
-
-  #configForm label {
-  display: inline-flex;
-  align-items: center;
-  writing-mode: horizontal-tb !important;
-  white-space: nowrap !important;
-  gap: 4px;
-}
-
-
-  /* 601px ~ 770px: 2열 유지, 도장판 최대 너비 제한 */
-  @media (min-width: 601px) and (max-width: 770px) {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도장판 & 증정</title>
+  <style>
     body {
-      flex-direction: column;
+      font-family: sans-serif;
+      background-color: #c5e6e8;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      flex-direction: row;
     }
-    #leftSection, #rewardSection {
-      width: 100%;
-      max-width: none;
-      flex: none;
+
+    #leftSection {
+      flex: 1 1 400px;
       min-width: 0;
+      /* 넘침 방지 */
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      /* 부모 flex item에서 꽉 채우도록 */
+      box-sizing: border-box;
     }
+
+
+    #configForm {
+      background: #fff;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 2px solid #444;
+      font-size: 14px;
+      box-sizing: border-box;
+
+    }
+
+    #configForm label {
+      display: inline-block;
+      width: 100px;
+      font-weight: 600;
+    }
+
+    #configForm input[type="number"],
+    #configForm select {
+      padding: 4px;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    #configForm input[type="number"] {
+      width: 70px;
+    }
+
+    #configForm .line {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #configForm button.add-btn {
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background-color: #4a90e2;
+      color: white;
+      font-size: 15px;
+    }
+
+    #configForm button.reset-btn {
+      font-weight: 400;
+      font-size: 13px;
+      color: #888;
+      background: none;
+      border: none;
+      cursor: pointer;
+      align-self: center;
+    }
+
+    .rewardCountWrapper {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .rewardCountWrapper span {
+      margin-left: 4px;
+      font-size: 13px;
+    }
+
+    /* 도장판 2열 3행 배치 (왼쪽 오른쪽 열로 세로로 3개씩) */
     #stampBoardsContainer {
+      display: grid;
       grid-template-columns: repeat(2, 1fr);
-      max-height: 250px; /* 필요시 조절 */
+      grid-auto-rows: auto;
+      gap: 12px 12px;
+      width: 100%;
+      max-height: 600px;
+      overflow-y: auto;
+      background: #f9f9f9;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid #bbb;
     }
+
+    /* 각 도장판 */
     .board-set {
-      max-width: 320px;
-      margin: 0 auto;
+      background: #fff;
+      border: 2px solid #444;
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      box-sizing: border-box;
     }
+
+    .board-header {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .stamp-board {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
     .stamp {
-      font-size: 10px;
+      background: #fff;
+      border: 1px solid #888;
+      padding: 4px 2px 6px 2px;
+      text-align: center;
+      border-radius: 6px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
     .stamp input[type="text"] {
       width: 80%;
       max-width: 80px;
+      font-size: 10px;
+      margin-top: 3px;
+      text-align: center;
+      padding: 1px 3px;
+      border-radius: 4px;
+      border: 1px solid #bbb;
     }
-    #rewardSection {
-      width: 100%;
-      margin-top: 20px;
-      flex-shrink: initial;
-    }
-  }
 
-  /* 461px ~ 600px: 1열, 도장판 꽉 채움 */
-  @media (min-width: 461px) and (max-width: 600px) {
-    body {
-      flex-direction: column;
+    .stamp input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-top: 1px;
+      cursor: pointer;
     }
-    #leftSection, #rewardSection {
-      width: 100%;
-      max-width: none;
-      flex: none;
-      min-width: 0;
-    }
-    #stampBoardsContainer {
-      grid-template-columns: 1fr;
-      max-height: 250px;
-    }
-    .board-set {
-      max-width: 100%;
-      margin: 0;
-    }
-    .stamp {
+
+    .stamp-num {
+      font-weight: 600;
       font-size: 11px;
+      margin-bottom: 1px;
+      user-select: none;
+      margin-left: 3px;
     }
-    .stamp input[type="text"] {
+
+    .stamp-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2px;
+    }
+
+    .stamp.special {
+      font-weight: 700;
+      color: #222;
+    }
+
+    .stamp.special-1 {
+      background-color: #fff3b0;
+    }
+
+    .stamp.special-2 {
+      background-color: #cce5ff;
+    }
+
+    .stamp.special-3 {
+      background-color: #c6ffe2;
+    }
+
+    #rewardSection {
+      flex: 0 1 180px;
+      min-width: 100px;
+      flex-shrink: 0;
+      width: 180px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin: 12px 0 6px;
+      font-size: 15px;
+    }
+
+    .coupon-board {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .coupon {
+      background: white;
+      border: 2px solid #444;
+      padding: 6px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .coupon-type {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .coupon input[type="text"] {
       width: 90%;
-      max-width: 60px;
+      font-size: 12px;
+      margin-top: 4px;
+      text-align: center;
+      padding: 3px 5px;
+      border-radius: 5px;
+      border: 1px solid #bbb;
     }
-    #rewardSection {
-      width: 100%;
-      margin-top: 20px;
-      flex-shrink: initial;
-    }
-  }
 
-  /* 460px 이하: 1열, 도장판 꽉 채움, 글씨 조금 더 작게 */
-  @media (max-width: 460px) {
-    body {
-      flex-direction: column;
+    .coupon input[type="checkbox"] {
+      transform: scale(1.3);
+      margin-bottom: 6px;
+      cursor: pointer;
     }
-    #leftSection, #rewardSection {
-      width: 100%;
-      max-width: none;
-      flex: none;
-      min-width: 0;
+
+    #buttonGroup {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center;
     }
+
+    /* 반응형 처리 */
+
+    /* 기본: 2열 */
     #stampBoardsContainer {
-      grid-template-columns: 1fr;
-      max-height: 250px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      max-height: none;
+      /* 필요시 조정 */
     }
-    .board-set {
-      max-width: 100%;
-      margin: 0;
+
+    #configForm label {
+      display: inline-flex;
+      align-items: center;
+      writing-mode: horizontal-tb !important;
+      white-space: nowrap !important;
+      gap: 4px;
     }
-    .stamp {
-      font-size: 9px;
+
+
+    /* 601px ~ 770px: 2열 유지, 도장판 최대 너비 제한 */
+    @media (min-width: 601px) and (max-width: 770px) {
+      body {
+        flex-direction: column;
+      }
+
+      #leftSection,
+      #rewardSection {
+        width: 100%;
+        max-width: none;
+        flex: none;
+        min-width: 0;
+      }
+
+      #stampBoardsContainer {
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 250px;
+        /* 필요시 조절 */
+      }
+
+      .board-set {
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .stamp {
+        font-size: 10px;
+      }
+
+      .stamp input[type="text"] {
+        width: 80%;
+        max-width: 80px;
+      }
+
+      #rewardSection {
+        width: 100%;
+        margin-top: 20px;
+        flex-shrink: initial;
+      }
     }
-    .stamp input[type="text"] {
-      width: 80%;
-      max-width: 50px;
+
+    /* 461px ~ 600px: 1열, 도장판 꽉 채움 */
+    @media (min-width: 461px) and (max-width: 600px) {
+      body {
+        flex-direction: column;
+      }
+
+      #leftSection,
+      #rewardSection {
+        width: 100%;
+        max-width: none;
+        flex: none;
+        min-width: 0;
+      }
+
+      #stampBoardsContainer {
+        grid-template-columns: 1fr;
+        max-height: 250px;
+      }
+
+      .board-set {
+        max-width: 100%;
+        margin: 0;
+      }
+
+      .stamp {
+        font-size: 11px;
+      }
+
+      .stamp input[type="text"] {
+        width: 90%;
+        max-width: 60px;
+      }
+
+      #rewardSection {
+        width: 100%;
+        margin-top: 20px;
+        flex-shrink: initial;
+      }
     }
-    #rewardSection {
-      width: 100%;
-      margin-top: 20px;
-      flex-shrink: initial;
+
+    /* 460px 이하: 1열, 도장판 꽉 채움, 글씨 조금 더 작게 */
+    @media (max-width: 460px) {
+      body {
+        flex-direction: column;
+      }
+
+      #leftSection,
+      #rewardSection {
+        width: 100%;
+        max-width: none;
+        flex: none;
+        min-width: 0;
+      }
+
+      #stampBoardsContainer {
+        grid-template-columns: 1fr;
+        max-height: 250px;
+      }
+
+      .board-set {
+        max-width: 100%;
+        margin: 0;
+      }
+
+      .stamp {
+        font-size: 9px;
+      }
+
+      .stamp input[type="text"] {
+        width: 75%;
+        max-width: 45px;
+      }
+
+      #rewardSection {
+        width: 100%;
+        margin-top: 20px;
+        flex-shrink: initial;
+      }
+
+      #rewardIndex1,
+      #rewardIndex2,
+      #rewardIndex3 {
+        max-width: 50px !important;
+      }
     }
-    #rewardIndex1, #rewardIndex2, #rewardIndex3 {
-    max-width: 50px !important;
-  }
-  }
 
-  @media (max-width: 430px) {
-  #configForm .line {
-    flex-direction: row;
-    align-items: flex-start;
-  }
+    @media (max-width: 430px) {
+      #configForm .line {
+        flex-direction: row;
+        align-items: flex-start;
+      }
 
-  #configForm label {
-    width: auto;
-    margin-bottom: 4px;
-  }
+      #configForm label {
+        width: auto;
+        margin-bottom: 4px;
+      }
 
-  #configForm input[type="number"],
-  #configForm select {
-    width: 100%;
-    max-width: 100%;
-    margin-right: 0;
-  }
+      #configForm input[type="number"],
+      #configForm select {
+        width: 100%;
+        max-width: 100%;
+        margin-right: 0;
+      }
 
-  .rewardCountWrapper {
-    width: 100%;
-  }
+      .rewardCountWrapper {
+        width: 100%;
+      }
 
-  .rewardCountWrapper input[type="number"] {
-    width: 100%;
-  }
+      .rewardCountWrapper input[type="number"] {
+        width: 100%;
+      }
 
-  .rewardCountWrapper span {
-    margin-left: 6px;
-  }
+      .rewardCountWrapper span {
+        margin-left: 6px;
+      }
 
-   #rewardIndex1, #rewardIndex2, #rewardIndex3 {
-    max-width: 40px !important;
-  }
-  #rewardCount1, #rewardCount2, #rewardCount3 {
-    max-width: 40px !important;
-  }
+      #rewardIndex1,
+      #rewardIndex2,
+      #rewardIndex3 {
+        max-width: 40px !important;
+      }
 
-  label #num {
-    display: flex !important;
-    flex-direction: row;
-    writing-mode: horizontal-tb !important;
-  }
-  * {
-  box-sizing: border-box;
-  }
+      #rewardCount1,
+      #rewardCount2,
+      #rewardCount3 {
+        max-width: 40px !important;
+      }
 
-}
+      label #num {
+        display: flex !important;
+        flex-direction: row;
+        writing-mode: horizontal-tb !important;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+    }
+
+    .day-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1;
+      width: auto;
+      height: auto;
+      margin-right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
 
-</style>
+    .stamp-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stamp-row input[type="text"] {
+      width: 60%;
+      max-width: 80px;
+      margin-left: 3px;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .stamp-row .day-btn {
+      flex-shrink: 0;
+      width: 15px;
+      height: 15px;
+    }
+  </style>
 </head>
+
 <body>
 
 
-<div id="leftSection">
+  <div id="leftSection">
 
-  <form id="configForm" onsubmit="return false;">
-    <div class="line">
-      <label for="totalStamps">총 도장 개수</label>
-      <input id="totalStamps" type="number" min="1" max="20" value="8" required />
-      <span>개</span>
-    </div>
-
-    <div class="line">
-      <label id="num">증정 1</label>
-      <input id="rewardIndex1" type="number" min="1" max="20" value="4" />
-      <span>찍</span>
-      <select id="rewardType1">
-        <option value="">없음</option>
-        <option value="discount">할인권</option>
-        <option value="polaroid">폴라로이드 교환권</option>
-        <option value="ost">OST 교환권</option>
-        <option value="memory">메모리북</option>
-        <option value="etc">기타</option>
-      </select>
-      <div class="rewardCountWrapper">
-        <input id="rewardCount1" type="number" min="1" max="10" value="2" />
+    <form id="configForm" onsubmit="return false;">
+      <div class="line">
+        <label for="totalStamps">총 도장 개수</label>
+        <input id="totalStamps" type="number" min="1" max="20" value="8" required />
         <span>개</span>
       </div>
-    </div>
-    <div class="line">
-      <label id="num">증정 2</label>
-      <input id="rewardIndex2" type="number" min="1" max="20" value="8" />
-      <span>찍</span>
-      <select id="rewardType2">
-        <option value="">없음</option>
-        <option value="discount">할인권</option>
-        <option value="polaroid">폴라로이드 교환권</option>
-        <option value="ost">OST 교환권</option>
-        <option value="memory">메모리북</option>
-        <option value="etc">기타</option>
-      </select>
-      <div class="rewardCountWrapper">
-        <input id="rewardCount2" type="number" min="1" max="10" value="1" />
-        <span>개</span>
+
+      <div class="line">
+        <label id="num">증정 1</label>
+        <input id="rewardIndex1" type="number" min="1" max="20" value="4" />
+        <span>찍</span>
+        <select id="rewardType1">
+          <option value="">없음</option>
+          <option value="discount">할인권</option>
+          <option value="polaroid">폴라로이드 교환권</option>
+          <option value="ost">OST 교환권</option>
+          <option value="memory">메모리북</option>
+          <option value="etc">기타</option>
+        </select>
+        <div class="rewardCountWrapper">
+          <input id="rewardCount1" type="number" min="1" max="10" value="2" />
+          <span>개</span>
+        </div>
       </div>
-    </div>
-    <div class="line">
-      <label id="num">증정 3</label>
-      <input id="rewardIndex3" type="number" min="1" max="20" placeholder="-" />
-      <span>찍</span>
-      <select id="rewardType3">
-        <option value="">없음</option>
-        <option value="discount">할인권</option>
-        <option value="polaroid">폴라로이드 교환권</option>
-        <option value="ost">OST 교환권</option>
-        <option value="memory">메모리북</option>
-        <option value="etc">기타</option>
-      </select>
-      <div class="rewardCountWrapper">
-        <input id="rewardCount3" type="number" min="1" max="10" value="1" />
-        <span>개</span>
+      <div class="line">
+        <label id="num">증정 2</label>
+        <input id="rewardIndex2" type="number" min="1" max="20" value="8" />
+        <span>찍</span>
+        <select id="rewardType2">
+          <option value="">없음</option>
+          <option value="discount">할인권</option>
+          <option value="polaroid">폴라로이드 교환권</option>
+          <option value="ost">OST 교환권</option>
+          <option value="memory">메모리북</option>
+          <option value="etc">기타</option>
+        </select>
+        <div class="rewardCountWrapper">
+          <input id="rewardCount2" type="number" min="1" max="10" value="1" />
+          <span>개</span>
+        </div>
       </div>
+      <div class="line">
+        <label id="num">증정 3</label>
+        <input id="rewardIndex3" type="number" min="1" max="20" placeholder="-" />
+        <span>찍</span>
+        <select id="rewardType3">
+          <option value="">없음</option>
+          <option value="discount">할인권</option>
+          <option value="polaroid">폴라로이드 교환권</option>
+          <option value="ost">OST 교환권</option>
+          <option value="memory">메모리북</option>
+          <option value="etc">기타</option>
+        </select>
+        <div class="rewardCountWrapper">
+          <input id="rewardCount3" type="number" min="1" max="10" value="1" />
+          <span>개</span>
+        </div>
+      </div>
+
+      <div id="buttonGroup">
+        <button type="button" class="add-btn" onclick="createStampBoard()">도장판 추가</button>
+        <button type="button" class="reset-btn" onclick="resetAll()">리셋</button>
+      </div>
+    </form>
+
+    <div id="stampBoardsContainer">
+      <!-- 도장판들이 2열 3행씩 쌓임 -->
     </div>
 
-    <div id="buttonGroup">
-      <button type="button" class="add-btn" onclick="createStampBoard()">도장판 추가</button>
-      <button type="button" class="reset-btn" onclick="resetAll()">리셋</button>
-    </div>
-  </form>
-
-  <div id="stampBoardsContainer">
-    <!-- 도장판들이 2열 3행씩 쌓임 -->
   </div>
 
-</div>
-
-<div id="rewardSection">
-  <div class="section-title">증정</div>
-  <div id="rewardContainer">
-    <div id="discountSection" style="display:none;">
-      <div class="section-title">할인권</div>
-      <div id="discountBoard" class="coupon-board"></div>
-    </div>
-    <div id="polaroidSection" style="display:none;">
-      <div class="section-title">폴라로이드 교환권</div>
-      <div id="polaroidBoard" class="coupon-board"></div>
-    </div>
-    <div id="ostSection" style="display:none;">
-      <div class="section-title">OST 교환권</div>
-      <div id="ostBoard" class="coupon-board"></div>
-    </div>
-    <div id="memorySection" style="display:none;">
-      <div class="section-title">메모리북</div>
-      <div id="memoryBoard" class="coupon-board"></div>
-    </div>
-    <div id="etcSection" style="display:none;">
-      <div class="section-title">기타</div>
-      <div id="etcBoard" class="coupon-board"></div>
+  <div id="rewardSection">
+    <div class="section-title">증정</div>
+    <div id="rewardContainer">
+      <div id="discountSection" style="display:none;">
+        <div class="section-title">할인권</div>
+        <div id="discountBoard" class="coupon-board"></div>
+      </div>
+      <div id="polaroidSection" style="display:none;">
+        <div class="section-title">폴라로이드 교환권</div>
+        <div id="polaroidBoard" class="coupon-board"></div>
+      </div>
+      <div id="ostSection" style="display:none;">
+        <div class="section-title">OST 교환권</div>
+        <div id="ostBoard" class="coupon-board"></div>
+      </div>
+      <div id="memorySection" style="display:none;">
+        <div class="section-title">메모리북</div>
+        <div id="memoryBoard" class="coupon-board"></div>
+      </div>
+      <div id="etcSection" style="display:none;">
+        <div class="section-title">기타</div>
+        <div id="etcBoard" class="coupon-board"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  let currentBoardId = 0;
-  const allBoards = [];
+  <script>
+    let currentBoardId = 0;
+    const allBoards = [];
 
-  function resetAll() {
-    if(confirm('모든 도장판과 증정 내역을 삭제하시겠습니까?')) {
-      allBoards.length = 0;
-      document.getElementById('stampBoardsContainer').innerHTML = '';
-      clearRewards();
-      currentBoardId = 0;
-      hideAllRewardSections();
-    }
-  }
-
-  function moveRewardSectionForMobile() {
-    const rewardSection = document.getElementById('rewardSection');
-    const leftSection = document.getElementById('leftSection');
-
-    if(window.innerWidth <= 720) {
-      if(leftSection.nextElementSibling !== rewardSection) {
-        leftSection.insertAdjacentElement('afterend', rewardSection);
-      }
-    } else {
-      if(document.body.lastElementChild !== rewardSection) {
-        document.body.appendChild(rewardSection);
+    function resetAll() {
+      if (confirm('모든 도장판과 증정 내역을 삭제하시겠습니까?')) {
+        allBoards.length = 0;
+        document.getElementById('stampBoardsContainer').innerHTML = '';
+        clearRewards();
+        currentBoardId = 0;
+        hideAllRewardSections();
       }
     }
-  }
 
-  // 초기 실행 및 리사이즈 시 실행
-  window.addEventListener('resize', moveRewardSectionForMobile);
-  window.addEventListener('DOMContentLoaded', moveRewardSectionForMobile);
+    function moveRewardSectionForMobile() {
+      const rewardSection = document.getElementById('rewardSection');
+      const leftSection = document.getElementById('leftSection');
 
-  function clearRewards() {
-    ['discountBoard','polaroidBoard','ostBoard','memoryBoard','etcBoard'].forEach(id => {
-      document.getElementById(id).innerHTML = '';
-    });
-  }
-
-  function hideAllRewardSections() {
-    ['discountSection','polaroidSection','ostSection','memorySection','etcSection'].forEach(id => {
-      document.getElementById(id).style.display = 'none';
-    });
-  }
-
-  function showRewardSection(type) {
-    const map = {
-      discount: 'discountSection',
-      polaroid: 'polaroidSection',
-      ost: 'ostSection',
-      memory: 'memorySection',
-      etc: 'etcSection',
-    };
-    if(map[type]) {
-      document.getElementById(map[type]).style.display = 'block';
-    }
-  }
-
-  function deleteBoard(btn) {
-    const boardSet = btn.closest('.board-set');
-    if(!boardSet) return;
-    const id = Number(boardSet.dataset.boardId);
-    boardSet.remove();
-    const idx = allBoards.findIndex(b => b.id === id);
-    if(idx !== -1) allBoards.splice(idx,1);
-    updateRewards();
-  }
-
-  function createStampBoard() {
-    const total = Number(document.getElementById('totalStamps').value);
-    if(!total || total < 1 || total > 20) {
-      alert('총 도장 개수는 1~20 사이여야 합니다.');
-      return;
-    }
-
-    let rewards = [];
-    for(let i=1; i<=3; i++) {
-      const idxRaw = document.getElementById(`rewardIndex${i}`).value.trim();
-      const type = document.getElementById(`rewardType${i}`).value;
-      const countRaw = document.getElementById(`rewardCount${i}`).value.trim();
-
-      if(idxRaw !== '' && type !== '') {
-        const idx = Number(idxRaw);
-        if(idx < 1 || idx > total) {
-          alert(`증정 시점 ${i}번째 도장 번호가 범위를 벗어났습니다.`);
-          return;
+      if (window.innerWidth <= 720) {
+        if (leftSection.nextElementSibling !== rewardSection) {
+          leftSection.insertAdjacentElement('afterend', rewardSection);
         }
-        const count = Number(countRaw);
-        if(count < 1 || count > 10 || isNaN(count)) {
-          alert(`증정 개수는 1~10 사이여야 합니다.`);
-          return;
+      } else {
+        if (document.body.lastElementChild !== rewardSection) {
+          document.body.appendChild(rewardSection);
         }
-        rewards.push({index: idx, type, count});
       }
     }
 
-    if(rewards.length === 0) {
-      alert('최소 한 개 이상의 증정 시점과 보상을 설정해주세요.');
-      return;
+    // 초기 실행 및 리사이즈 시 실행
+    window.addEventListener('resize', moveRewardSectionForMobile);
+    window.addEventListener('DOMContentLoaded', moveRewardSectionForMobile);
+
+    function clearRewards() {
+      ['discountBoard', 'polaroidBoard', 'ostBoard', 'memoryBoard', 'etcBoard'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+      });
     }
 
-    currentBoardId++;
-    const boardWrap = document.createElement('div');
-    boardWrap.className = 'board-set';
-    boardWrap.dataset.boardId = currentBoardId;
+    function hideAllRewardSections() {
+      ['discountSection', 'polaroidSection', 'ostSection', 'memorySection', 'etcSection'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
 
-    const header = document.createElement('div');
-    header.className = 'board-header';
-    header.innerHTML = `
+    function showRewardSection(type) {
+      const map = {
+        discount: 'discountSection',
+        polaroid: 'polaroidSection',
+        ost: 'ostSection',
+        memory: 'memorySection',
+        etc: 'etcSection',
+      };
+      if (map[type]) {
+        document.getElementById(map[type]).style.display = 'block';
+      }
+    }
+
+    function deleteBoard(btn) {
+      const boardSet = btn.closest('.board-set');
+      if (!boardSet) return;
+      const id = Number(boardSet.dataset.boardId);
+      boardSet.remove();
+      const idx = allBoards.findIndex(b => b.id === id);
+      if (idx !== -1) allBoards.splice(idx, 1);
+      updateRewards();
+    }
+
+    function createStampBoard() {
+      const total = Number(document.getElementById('totalStamps').value);
+      if (!total || total < 1 || total > 20) {
+        alert('총 도장 개수는 1~20 사이여야 합니다.');
+        return;
+      }
+
+      let rewards = [];
+      for (let i = 1; i <= 3; i++) {
+        const idxRaw = document.getElementById(`rewardIndex${i}`).value.trim();
+        const type = document.getElementById(`rewardType${i}`).value;
+        const countRaw = document.getElementById(`rewardCount${i}`).value.trim();
+
+        if (idxRaw !== '' && type !== '') {
+          const idx = Number(idxRaw);
+          if (idx < 1 || idx > total) {
+            alert(`증정 시점 ${i}번째 도장 번호가 범위를 벗어났습니다.`);
+            return;
+          }
+          const count = Number(countRaw);
+          if (count < 1 || count > 10 || isNaN(count)) {
+            alert(`증정 개수는 1~10 사이여야 합니다.`);
+            return;
+          }
+          rewards.push({ index: idx, type, count });
+        }
+      }
+
+      if (rewards.length === 0) {
+        alert('최소 한 개 이상의 증정 시점과 보상을 설정해주세요.');
+        return;
+      }
+
+      currentBoardId++;
+      const boardWrap = document.createElement('div');
+      boardWrap.className = 'board-set';
+      boardWrap.dataset.boardId = currentBoardId;
+
+      const header = document.createElement('div');
+      header.className = 'board-header';
+      header.innerHTML = `
       <span>도장판 #${currentBoardId}</span>
       <button class="delete-btn" title="삭제" onclick="deleteBoard(this)">×</button>
     `;
-    boardWrap.appendChild(header);
+      boardWrap.appendChild(header);
 
-    const board = document.createElement('div');
-    board.className = 'stamp-board';
+      const board = document.createElement('div');
+      board.className = 'stamp-board';
 
-    // 도장칸 생성 (총 개수)
-    for(let i=1; i<=total; i++) {
-      const div = document.createElement('div');
-      div.className = 'stamp';
+      // 도장칸 생성 (총 개수)
+      for (let i = 1; i <= total; i++) {
+        const div = document.createElement('div');
+        div.className = 'stamp';
 
-      const rewardObj = rewards.find(r => r.index === i);
-      if(rewardObj) {
-        div.classList.add('special');
-        if(i === 4) div.classList.add('special-4');
-        else if(i === 8) div.classList.add('special-8');
-        else div.style.backgroundColor = '#fff3b0';
-      }
+        // rewards 배열에서 i번째 도장번호가 몇 번째 인덱스인지 찾기
+        const rewardIndex = rewards.findIndex(r => r.index === i);
 
-      div.innerHTML = `
+        if (rewardIndex !== -1) {
+          div.classList.add('special');
+          div.classList.add(`special-${rewardIndex + 1}`);  // 인덱스 기준으로 클래스 부여
+        }
+
+
+
+
+        div.innerHTML = `
         <div class="stamp-top">
             <span class="stamp-num">${i}</span>
             <input type="checkbox" onchange="updateRewards()" />
         </div>
-        <input type="text" placeholder="MM/DD" maxlength="5" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').slice(0,5)" />
+        <div class="stamp-row">
+            <input type="text" placeholder="MM/DD" maxlength="5" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').slice(0,5)" />
+            <button class="day-btn">☀️</button>
+        </div>
       `;
-      board.appendChild(div);
+
+        const btn = div.querySelector('.day-btn'); // id 말고 class로 찾음
+        btn.addEventListener('click', () => {
+          btn.textContent = btn.textContent === '☀️' ? '🌙' : '☀️';
+        });
+
+        board.appendChild(div);
+      }
+
+      boardWrap.appendChild(board);
+
+      document.getElementById('stampBoardsContainer').appendChild(boardWrap);
+
+      allBoards.push({ id: currentBoardId, total, rewards, element: boardWrap });
+
+      updateRewards();
     }
 
-    boardWrap.appendChild(board);
 
-    document.getElementById('stampBoardsContainer').appendChild(boardWrap);
 
-    allBoards.push({ id: currentBoardId, total, rewards, element: boardWrap });
+    function updateRewards() {
 
-    updateRewards();
-  }
+      const previousStates = {
+        discount: [],
+        polaroid: [],
+        ost: [],
+        memory: [],
+        etc: []
+      };
 
-  function updateRewards() {
-    clearRewards();
-    hideAllRewardSections();
-
-    const rewardNames = {
-      discount: '할인권',
-      polaroid: '폴라로이드 교환권',
-      ost: 'OST 교환권',
-      memory: '메모리북',
-      etc: '기타',
-    };
-
-    let rewardTotals = {
-      discount: 0,
-      polaroid: 0,
-      ost: 0,
-      memory: 0,
-      etc: 0,
-    };
-
-    allBoards.forEach(board => {
-      const checkboxes = board.element.querySelectorAll('.stamp input[type="checkbox"]');
-      let checkedCount = 0;
-      checkboxes.forEach(cb => {
-        if(cb.checked) checkedCount++;
-      });
-
-      board.rewards.forEach(r => {
-        if(checkedCount >= r.index) {
-          rewardTotals[r.type] += r.count;
-        }
-      });
-    });
-
-    Object.entries(rewardTotals).forEach(([type, total]) => {
-      if(total > 0) {
-        showRewardSection(type);
+      Object.keys(previousStates).forEach(type => {
         const board = document.getElementById(type + 'Board');
-        for(let i=0; i<total; i++) {
-          const div = document.createElement('div');
-          div.className = 'coupon';
+        const coupons = board?.querySelectorAll('.coupon') || [];
+        coupons.forEach(coupon => {
+          const checkbox = coupon.querySelector('input[type="checkbox"]');
+          const text = coupon.querySelector('input[type="text"]');
+          previousStates[type].push({
+            checked: checkbox?.checked || false,
+            value: text?.value || ''
+          });
+        });
+      });
 
-          let inputHtml = '';
-          if(type === 'discount') {
-            inputHtml = `<input type="checkbox" /> 사용<br><input type="text" placeholder="MM/DD" maxlength="5" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').slice(0,5)" />`;
-          } else {
-            inputHtml = `<input type="checkbox" /> 사용<br><input type="text" placeholder="이름" />`;
+      clearRewards();
+      hideAllRewardSections();
+
+      const rewardNames = {
+        discount: '할인권',
+        polaroid: '폴라로이드 교환권',
+        ost: 'OST 교환권',
+        memory: '메모리북',
+        etc: '기타',
+      };
+
+      let rewardTotals = {
+        discount: 0,
+        polaroid: 0,
+        ost: 0,
+        memory: 0,
+        etc: 0,
+      };
+
+      allBoards.forEach(board => {
+        const checkboxes = board.element.querySelectorAll('.stamp input[type="checkbox"]');
+        let checkedCount = 0;
+        checkboxes.forEach(cb => {
+          if (cb.checked) checkedCount++;
+        });
+
+        board.rewards.forEach(r => {
+          if (checkedCount >= r.index) {
+            rewardTotals[r.type] += r.count;
           }
+        });
+      });
 
-          div.innerHTML = `<div class="coupon-type">${rewardNames[type]}</div>` + inputHtml;
+      Object.entries(rewardTotals).forEach(([type, total]) => {
+        if (total > 0) {
+          showRewardSection(type);
+          const board = document.getElementById(type + 'Board');
+          for (let i = 0; i < total; i++) {
+            const div = document.createElement('div');
+            div.className = 'coupon';
 
-          board.appendChild(div);
+            let inputHtml = '';
+            if (type === 'discount') {
+              inputHtml = `<input type="checkbox" /> 사용<br><input type="text" placeholder="MM/DD" maxlength="5" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').slice(0,5)" />`;
+            } else {
+              inputHtml = `<input type="checkbox" /> 사용<br><input type="text" placeholder="이름" />`;
+            }
+
+            div.innerHTML = `<div class="coupon-type">${rewardNames[type]}</div>` + inputHtml;
+
+            const saved = previousStates[type][i];
+            if (saved) {
+              const cb = div.querySelector('input[type="checkbox"]');
+              const text = div.querySelector('input[type="text"]');
+              if (cb) cb.checked = saved.checked;
+              if (text) text.value = saved.value;
+            }
+
+            board.appendChild(div);
+          }
         }
-      }
-    });
-  }
-  
-</script>
+      });
+    }
+
+  </script>
 
 </body>
+
 </html>
